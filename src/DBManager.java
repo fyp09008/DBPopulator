@@ -55,7 +55,7 @@ public class DBManager {
 	 * @param query
 	 * @throws SQLException
 	 */
-	public void Update(String query) throws SQLException
+	public void update(String query) throws SQLException
 	{
 		this.connect();
 		conn.createStatement().executeUpdate(query);

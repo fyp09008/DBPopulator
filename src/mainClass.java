@@ -35,23 +35,22 @@ public class mainClass {
 				ArrayList<String> types = new ArrayList<String>();
 				while (rs.next()) {
 					fields.add(rs.getString(1));
-					if (!(fields.get(fields.size() - 1).equals("id") || fields.get(fields.size() - 1).equals("pid")))
+					if (!(fields.get(fields.size() - 1).equals("id") || (fields.size() - 1 == 0 && fields.get(fields.size() - 1).equals("pid"))))
 						query = query + "`" + fields.get(fields.size() - 1) + "`, ";
 					types.add(rs.getString(2));
-					System.out.print(types.get(types.size()-1)+" ");
 				}
-				System.out.println();
+				
 				query = query.substring(0, query.length()-2);
 				query += ") VALUES (";
 				String subquery;
 				
-				int RAND_RECORD = 1;
+				int RAND_RECORD = 100000;
 				for (int j = 0; j < RAND_RECORD; j++) {
 					subquery = query;
 					String randData = "";
 					for(int k = 0; k < types.size(); k++) {
 						if (k != 0 && types.get(k).equals("int(11)")) {
-							System.out.println(k +" " + types.get(k));
+							
 							//random < 100000
 							Random ran = new Random();
 							int randno = ran.nextInt(RAND_RECORD) + 1;
@@ -98,12 +97,10 @@ public class mainClass {
 									(randno / 10000000) == 9 || randno / 100000 != 999));
 							String randnoStr = Integer.toString(randno);
 							randData = randData+"'" +randnoStr + "', ";
-						} else if (fields.get(k).equals("Role")) {
-							//Doctor
-							randData = randData + "'Professor', ";
-						} else if (k!=0){
+
+						} else if (k!=0) {
 							Random ran = new Random();
-							String STRING_ASCII = " 1234567890-=~!@#$%^&*()_+qwertyuiop[]\\QWERTYUIOP{}|afghjklASDFGHJKL:zxcvbnm,./ZXCVBNM<>?";
+							String STRING_ASCII = "0987654321qweyuioplkjhgfdsazcvbnmQWETYUIOPLKJHGFDSAZXCVBNM";
 							randData += "'";
 							for (int a = 0; a < 50; a++) {
 								int randno = ran.nextInt(STRING_ASCII.length());
@@ -115,8 +112,11 @@ public class mainClass {
 					}
 					subquery = subquery + randData.substring(0, randData.length()-2) + ");";
 					System.out.println(subquery);
+					dbm.update(subquery);
+					
 					randData = "";
 				}
+				System.out.println();
 			}
 			
 		} catch (SQLException e) {
